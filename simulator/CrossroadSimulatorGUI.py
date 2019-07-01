@@ -265,7 +265,7 @@ class CrossroadSimulatorGUI(QMainWindow):
                     car['y'] = self.bresenhamPaths[routeID][1][car['counter']]
                     car['angle'] = self.bresenhamPaths[routeID][2][car['counter']]
 
-                car['speed'] = np.random.randint(4, 10)  # pixels per step
+                car['speed'] = np.random.randint(5, 10)  # pixels per step
                 car['route'] = routeID
                 car['image_index'] = np.random.randint(0, len(self.carLibrary))
                 car['sizes'] = self.carSizes[car['image_index']] ##(width, height)
@@ -337,7 +337,7 @@ class CrossroadSimulatorGUI(QMainWindow):
                         car['x'] = self.bresenhamPaths[routeID][0][0]
                         car['y'] = self.bresenhamPaths[routeID][1][0]
                         car['angle'] = self.bresenhamPaths[routeID][2][0]
-                        car['speed'] = np.random.randint(4, 10)  # pixels per step
+                        car['speed'] = np.random.randint(5, 10)  # pixels per step
                         car['route'] = routeID
                         car['image_index'] = np.random.randint(0, len(self.carLibrary))
                         car['sizes'] = self.carSizes[car['image_index']]  ##(width, height)
