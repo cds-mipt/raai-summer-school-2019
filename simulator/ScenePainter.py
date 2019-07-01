@@ -149,7 +149,18 @@ class ScenePainter:
 
                     # angle calculation
                     angle_deg = self.calc_angle(prev_point, current_point)
-                    aa = np.ones((len(xx))) * angle_deg
+                    if (idx < len(points)-1):
+                        next_point = points[idx+1]
+                        next_angle_deg = self.calc_angle(current_point, next_point)
+                        if np.abs(next_angle_deg-angle_deg)<180:
+                            aa = np.arange(len(xx)) * (next_angle_deg-angle_deg) / len(xx) + angle_deg
+                        else:
+                            if (next_angle_deg - angle_deg) < 0:
+                                aa = np.arange(len(xx)) * (next_angle_deg - angle_deg + 360) / len(xx) + angle_deg
+                            else:
+                                aa = np.arange(len(xx)) * (next_angle_deg - angle_deg - 360) / len(xx) + angle_deg
+                    else:
+                        aa = np.ones((len(xx))) * angle_deg
                     if bresenham_points[2] is None:
                         bresenham_points[2] = aa
                     else:
