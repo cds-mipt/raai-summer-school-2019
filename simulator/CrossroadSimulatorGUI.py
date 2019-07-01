@@ -303,16 +303,31 @@ class CrossroadSimulatorGUI(QMainWindow):
                     longDistSpeed = 3
 
                 #newCar['counter'] = newCar['counter'] + newCar['speed']
-                newCar['counter'] = newCar['counter'] + longDistSpeed
-                if(newCar['counter'] < len(self.bresenhamPaths[car['route']][0])):
-                    newCar['x'] = self.bresenhamPaths[car['route']][0][newCar['counter']]
-                    newCar['y'] = self.bresenhamPaths[car['route']][1][newCar['counter']]
-                    newCar['angle'] = self.bresenhamPaths[car['route']][2][newCar['counter']]
-                    isIntersectionPrew = self.existIntersections(newCar, self.cars, longCoef=2.0, rightCoef=2.0)
-                    isIntersectionNew = self.existIntersections(newCar, newCars, longCoef=2.0, rightCoef=2.0)
+                #newCar['counter'] = newCar['counter'] + longDistSpeed
+                counter = car['counter'] + longDistSpeed
+                if(counter < len(self.bresenhamPaths[car['route']][0])):
+                    newCar['counter'] = counter
+                    newCar['x'] = self.bresenhamPaths[car['route']][0][counter]
+                    newCar['y'] = self.bresenhamPaths[car['route']][1][counter]
+                    newCar['angle'] = self.bresenhamPaths[car['route']][2][counter]
+                    isIntersectionPrew = self.existIntersections(newCar, self.cars, longCoef=3.0, rightCoef=2.0)
+                    isIntersectionNew = self.existIntersections(newCar, newCars, longCoef=3.0, rightCoef=2.0)
                     isIntersection = isIntersectionPrew or isIntersectionNew
                     if not isIntersection:
                         car = newCar
+                    else:
+                        counter = int(car['counter'] + longDistSpeed/2)
+                        newCar['counter'] = counter
+                        newCar['x'] = self.bresenhamPaths[car['route']][0][counter]
+                        newCar['y'] = self.bresenhamPaths[car['route']][1][counter]
+                        newCar['angle'] = self.bresenhamPaths[car['route']][2][counter]
+
+                        isIntersectionPrew = self.existIntersections(newCar, self.cars, longCoef=2.0, rightCoef=1.5)
+                        isIntersectionNew = self.existIntersections(newCar, newCars, longCoef=2.0, rightCoef=1.5)
+                        isIntersection = isIntersectionPrew or isIntersectionNew
+                        if not isIntersection:
+                            car = newCar
+
 
                 else:
                     car['counter'] = 0
