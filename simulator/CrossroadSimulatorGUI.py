@@ -3,10 +3,10 @@ import os
 import numpy as np
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import QPushButton, QHBoxLayout, QVBoxLayout, QMainWindow
-from PyQt5.QtWidgets import QRadioButton, QGroupBox, QFileDialog, QLabel, QSlider, QLineEdit, QProgressBar
-from PyQt5.QtGui  import QPixmap, QImage, QPainter, QColor, QCursor
+from PyQt5.QtWidgets import QLabel, QLineEdit
+from PyQt5.QtGui  import QPixmap, QImage
 from PyQt5.QtWidgets import QWidget, QApplication
-from PyQt5.QtCore import Qt, QPoint, QObject, QThread, QTimer
+from PyQt5.QtCore import Qt, QTimer
 import cv2
 from ScenePainter import ScenePainter
 from shapely.geometry import Polygon
@@ -14,7 +14,7 @@ from shapely.geometry import Polygon
 import time
 
 class CrossroadSimulatorGUI(QMainWindow):
-    #Переопределяем конструктор класса:
+    
     def __init__(self, master=None):
         QMainWindow.__init__(self, master)
         self.isMaskMode = False
@@ -165,47 +165,16 @@ class CrossroadSimulatorGUI(QMainWindow):
         # polygon of car
         car_w, car_h = car['sizes']
         car_polygon = []
-        # if longCoef is None:
-        #     car_polygon.append([car['x'] - car_w / 2, car['y'] - car_h / 2, 1])
-        #     car_polygon.append([car['x'] + car_w / 2, car['y'] - car_h / 2, 1])
-        #     car_polygon.append([car['x'] + car_w / 2, car['y'] + car_h / 2, 1])
-        #     car_polygon.append([car['x'] - car_w / 2, car['y'] + car_h / 2, 1])
-        # elif rightCoef is None:
-        #     car_polygon.append([car['x'] - car_w / 2, car['y'] - car_h / 2, 1])
-        #     car_polygon.append([car['x'] + (car_w / 2)*longCoef, car['y'] - car_h / 2, 1])
-        #     car_polygon.append([car['x'] + (car_w / 2)*longCoef, car['y'] + car_h / 2, 1])
-        #     car_polygon.append([car['x'] - car_w / 2, car['y'] + car_h / 2, 1])
-        # else:
+
         car_polygon.append([car['x'] - car_w / 2, car['y'] - car_h / 2, 1])
         car_polygon.append([car['x'] + (car_w / 2) * longCoef, car['y'] - car_h / 2, 1])
         car_polygon.append([car['x'] + (car_w / 2) * longCoef, car['y'] + (car_h / 2)*rightCoef, 1])
         car_polygon.append([car['x'] - car_w / 2, car['y'] + (car_h / 2)*rightCoef, 1])
 
         rotation_mat = cv2.getRotationMatrix2D((car['x'], car['y']), car['angle'], 1.0)
-        # cosA = np.cos(np.radians(car['angle']))
-        # sinA = np.sin(np.radians(car['angle']))
-        # rotation_matrix = np.asarray([[cosA, sinA, car['x']],
-        #                              [-sinA, cosA, car['y']]])
 
         car_polygon = np.transpose(np.dot(rotation_mat, np.transpose(np.asarray(car_polygon))))
         return car_polygon
-
-    # def existTwoCarsIntersection(self, car, otherCar):
-    #     carPlygon = self.getCarPolygon(car)
-    #     otherCarPlygon = self.getCarPolygon(otherCar)
-    #
-    #     # Example polygon
-    #     # xy = [[130.21001, 27.200001], [129.52, 27.34], [129.45, 27.1], [130.13, 26.950001]]
-    #     carPlygonShapely = Polygon(carPlygon)
-    #     otherCarPlygonShapely = Polygon(otherCarPlygon)
-    #     # Example grid cell
-    #     #gridcell_shape = box(129.5, -27.0, 129.75, 27.25)
-    #     # The intersection
-    #     intersectionArea = carPlygonShapely.intersection(otherCarPlygonShapely).area
-    #     if intersectionArea > 0:
-    #         return True
-    #     else:
-    #         return False
 
     def existTwoCarsIntersection(self, car, otherCar, longCoef = 1.0, rightCoef = 1.0):
         carPlygon = self.getCarPolygon(car, longCoef = longCoef, rightCoef = rightCoef)
@@ -229,15 +198,6 @@ class CrossroadSimulatorGUI(QMainWindow):
                     break
         return isIntersection
 
-    # def existIntersections(self, car, cars):
-    #     isIntersection = False
-    #     for otherCar in cars:
-    #         if car['index'] != otherCar['index']:
-    #             if self.existTwoCarsIntersection(car, otherCar):
-    #                 isIntersection = True
-    #                 break
-    #     return isIntersection
-
     def initScene(self, nCars):
 
         if nCars > 8:
@@ -250,10 +210,7 @@ class CrossroadSimulatorGUI(QMainWindow):
             while(isIntersection):
                 routeID = np.random.randint(0, len(self.bresenhamPaths))
                 car = {}
-                # car['x'] = self.currentImage.shape[1] / 2 + 40
-                # car['y'] = self.currentImage.shape[1] / 2 + i * 150
-                # car['angle'] = 90
-                # car['speed'] = 3 #pixels per step
+
                 if(i < 4):
                     car['counter'] = 0
                     car['x'] = self.bresenhamPaths[routeID][0][0]
@@ -284,7 +241,7 @@ class CrossroadSimulatorGUI(QMainWindow):
             startTime = time.time()
             self.stepCounter += 1
             self.currentImage = self.backgroundImage.copy()
-            # cv2.imwrite('data/cars/tmp/background_before.jpg', self.backgroundImage)
+
             self.maskImage = np.zeros((self.backgroundImage.shape[0],
                                        self.backgroundImage.shape[1]), dtype='uint8')
             newCars = []
@@ -297,13 +254,8 @@ class CrossroadSimulatorGUI(QMainWindow):
                 else:
                     longDistAngle = newCar['angle']
                 longDistAngleError = np.abs(np.abs(newCar['angle'])-np.abs(longDistAngle))
-                if(longDistAngleError < 10):
-                    longDistSpeed = int(newCar['speed']* (1 - longDistAngleError/90.0))
-                else:
-                    longDistSpeed = 3
+                longDistSpeed = int(newCar['speed'] * (1 - longDistAngleError / 90.0))
 
-                #newCar['counter'] = newCar['counter'] + newCar['speed']
-                #newCar['counter'] = newCar['counter'] + longDistSpeed
                 counter = car['counter'] + longDistSpeed
                 if(counter < len(self.bresenhamPaths[car['route']][0])):
                     newCar['counter'] = counter
@@ -359,8 +311,6 @@ class CrossroadSimulatorGUI(QMainWindow):
 
             self.leTimeFromStart.setText(str(self.stepCounter))
             #self.leTimeFromStart.setText("%.4f" % stepPeriod)
-            # cv2.imwrite('data/cars/tmp/currentImage_after.jpg', self.currentImage)
-            # cv2.imwrite('data/cars/tmp/background_after.jpg', self.backgroundImage)
 
 
     def startButtonClicked(self):
