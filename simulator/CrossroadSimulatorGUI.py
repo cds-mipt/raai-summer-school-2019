@@ -13,9 +13,14 @@ from shapely.geometry import Polygon
 
 import time
 
+import gym
+import gym_car_intersect
+
+env = gym.make('CarIntersect-v1')
+
 class CrossroadSimulatorGUI(QMainWindow):
-    
-    def __init__(self, master=None):
+
+    def __init__(self, agent, master=None):
         QMainWindow.__init__(self, master)
         self.isMaskMode = False
         self.mode = 0
@@ -24,6 +29,8 @@ class CrossroadSimulatorGUI(QMainWindow):
         self.timerPeriod = 35 #ms
         self.stepCounter = 0
         self.nCars = 4
+        self.agent = agent
+        self.prev_state = env.reset()
 
         self.painter = ScenePainter()
         self.backgroundImage = self.painter.load_background()
@@ -205,29 +212,18 @@ class CrossroadSimulatorGUI(QMainWindow):
         self.cars = []
         self.currentImage = self.backgroundImage.copy()
 
+        self.prev_states = env.reset()
         for i in range(nCars):
-            isIntersection = True
-            while(isIntersection):
-                routeID = np.random.randint(0, len(self.bresenhamPaths))
-                car = {}
+            car = {}
 
-                if(i < 4):
-                    car['counter'] = 0
-                    car['x'] = self.bresenhamPaths[routeID][0][0]
-                    car['y'] = self.bresenhamPaths[routeID][1][0]
-                    car['angle'] = self.bresenhamPaths[routeID][2][0]
-                else:
-                    car['counter'] = 200 + np.random.randint(0, 150)
-                    car['x'] = self.bresenhamPaths[routeID][0][car['counter']]
-                    car['y'] = self.bresenhamPaths[routeID][1][car['counter']]
-                    car['angle'] = self.bresenhamPaths[routeID][2][car['counter']]
+            car['x'] = self.prev_states[3*i]*22 + 689
+            car['y'] = -self.prev_states[3*i+1]*22 + 689
+            car['angle'] = self.prev_states[3*i+2]/np.pi*180+90
 
-                car['speed'] = np.random.randint(5, 10)  # pixels per step
-                car['route'] = routeID
-                car['image_index'] = np.random.randint(0, len(self.carLibrary))
-                car['sizes'] = self.carSizes[car['image_index']] ##(width, height)
-                car['index'] = i
-                isIntersection = self.existIntersections(car, self.cars)
+            car['speed'] = np.random.randint(5, 10)  # pixels per step
+            car['image_index'] = 3 if i==0 else np.random.randint(0, len(self.carLibrary))
+            car['sizes'] = self.carSizes[car['image_index']] ##(width, height)
+            car['index'] = i
             self.cars.append(car)
 
             self.currentImage, self.maskImage = self.painter.show_car(x=car['x'], y=car['y'], angle=car['angle'],
@@ -244,64 +240,21 @@ class CrossroadSimulatorGUI(QMainWindow):
 
             self.maskImage = np.zeros((self.backgroundImage.shape[0],
                                        self.backgroundImage.shape[1]), dtype='uint8')
-            newCars = []
-            for car in self.cars:
-                newCar = car.copy()
 
-                longDistStep = newCar['counter'] + 6*newCar['speed']
-                if (longDistStep < len(self.bresenhamPaths[car['route']][0])):
-                    longDistAngle = self.bresenhamPaths[car['route']][2][longDistStep]
-                else:
-                    longDistAngle = newCar['angle']
-                longDistAngleError = np.abs(np.abs(newCar['angle'])-np.abs(longDistAngle))
-                longDistSpeed = int(newCar['speed'] * (1 - longDistAngleError / 90.0))
+            actions = self.agent(self.prev_state)
+            self.prev_states, _, done, _ = env.step(actions)
 
-                counter = car['counter'] + longDistSpeed
-                if(counter < len(self.bresenhamPaths[car['route']][0])):
-                    newCar['counter'] = counter
-                    newCar['x'] = self.bresenhamPaths[car['route']][0][counter]
-                    newCar['y'] = self.bresenhamPaths[car['route']][1][counter]
-                    newCar['angle'] = self.bresenhamPaths[car['route']][2][counter]
-                    isIntersectionPrew = self.existIntersections(newCar, self.cars, longCoef=3.0, rightCoef=2.0)
-                    isIntersectionNew = self.existIntersections(newCar, newCars, longCoef=3.0, rightCoef=2.0)
-                    isIntersection = isIntersectionPrew or isIntersectionNew
-                    if not isIntersection:
-                        car = newCar
-                    else:
-                        counter = int(car['counter'] + longDistSpeed/2)
-                        newCar['counter'] = counter
-                        newCar['x'] = self.bresenhamPaths[car['route']][0][counter]
-                        newCar['y'] = self.bresenhamPaths[car['route']][1][counter]
-                        newCar['angle'] = self.bresenhamPaths[car['route']][2][counter]
+            for i, car in enumerate(self.cars):
 
-                        isIntersectionPrew = self.existIntersections(newCar, self.cars, longCoef=2.0, rightCoef=1.5)
-                        isIntersectionNew = self.existIntersections(newCar, newCars, longCoef=2.0, rightCoef=1.5)
-                        isIntersection = isIntersectionPrew or isIntersectionNew
-                        if not isIntersection:
-                            car = newCar
+                car['angle'] = np.degrees(self.prev_states[3*i+2])+90
+                car['x'] = self.prev_states[3*i]*22 + 689
+                car['y'] = -self.prev_states[3*i+1]*22 + 689
 
-
-                else:
-                    car['counter'] = 0
-                    isIntersection = True
-                    while (isIntersection):
-                        routeID = np.random.randint(0, len(self.bresenhamPaths))
-                        car['x'] = self.bresenhamPaths[routeID][0][0]
-                        car['y'] = self.bresenhamPaths[routeID][1][0]
-                        car['angle'] = self.bresenhamPaths[routeID][2][0]
-                        car['speed'] = np.random.randint(5, 10)  # pixels per step
-                        car['route'] = routeID
-                        car['image_index'] = np.random.randint(0, len(self.carLibrary))
-                        car['sizes'] = self.carSizes[car['image_index']]  ##(width, height)
-                        car['counter'] = 0
-                        isIntersection = self.existIntersections(car, self.cars)
-
-                newCars.append(car)
                 self.currentImage, self.maskImage = self.painter.show_car(x=car['x'], y=car['y'], angle=car['angle'],
                                                                           car_index=car['image_index'],
                                                                           background_image=self.currentImage,
                                                                           full_mask_image=self.maskImage)
-            self.cars = newCars
+
             if(self.isMaskMode):
                 self.printImageOnLabel(self.maskImage, self.imageLabel)
             else:
@@ -311,6 +264,9 @@ class CrossroadSimulatorGUI(QMainWindow):
 
             self.leTimeFromStart.setText(str(self.stepCounter))
             #self.leTimeFromStart.setText("%.4f" % stepPeriod)
+
+            if done:
+                self.initScene(self.nCars)
 
 
     def startButtonClicked(self):

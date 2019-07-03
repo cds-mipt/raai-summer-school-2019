@@ -1,0 +1,16 @@
+This is how road looks like.
+To make specific start just put start and end in the table below.
+The quantity of bot cars is arbitrary. Put as much as you need.
+Possible direction for path 3: 34, 36, 38. Similar for 5, 7 and 9.
+   |   |   |
+   | 9 | 8 |
+___|   |   |___
+ 2           7
+___         ___
+ 3           6
+___         ___
+   |   |   |
+   | 4 | 5 |
+   |   |   |
+car_path,bot1_path,bot2_path,bot3_path
+34,52,74,94
