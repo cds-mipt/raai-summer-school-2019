@@ -10,11 +10,17 @@ from PyQt5.QtCore import Qt, QTimer
 import cv2
 from ScenePainter import ScenePainter
 from shapely.geometry import Polygon
+from datetime import datetime
 
 import time
 
+from unetdetector.model import *
+from unetdetector.data import *
+from skimage.measure import label, regionprops
+
+
 class CrossroadSimulatorGUI(QMainWindow):
-    
+
     def __init__(self, master=None):
         QMainWindow.__init__(self, master)
         self.isMaskMode = False
@@ -43,6 +49,15 @@ class CrossroadSimulatorGUI(QMainWindow):
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.simulatorMotion)
+
+        #loading recognition models
+        self.segmentation_model_path = 'unetdetector/models/unet2019-07-02-22-08-09.29-tloss-0.0171-tdice-0.9829.hdf5'
+        self.segmentation_image_width = 512
+        self.segmentation_image_height = 512
+        self.segmentation_model = unet_light(pretrained_weights=self.segmentation_model_path,
+                                             input_size=(self.segmentation_image_width,
+                                                         self.segmentation_image_height, 3))
+
 
         self.initUI()
 
@@ -109,7 +124,7 @@ class CrossroadSimulatorGUI(QMainWindow):
         self.vbox.addWidget(self.imageLabel)
 
         self.setGeometry(0, 0, 900, 900)
-        self.setWindowTitle('Crossroad Simulator v.1.0 - CDS Lab, MIPT')
+        self.setWindowTitle('Crossroad Simulator v.1.1 - CDS Lab, MIPT')
         self.setWindowIcon(QtGui.QIcon('resources/CDS-lab.png'))
 
         self.mainhbox.addLayout(self.vbox)
@@ -198,12 +213,27 @@ class CrossroadSimulatorGUI(QMainWindow):
                     break
         return isIntersection
 
+    def findInPreviousState(self, car_box):
+        car_box_center = ((car_box[2]+car_box[0])/2,(car_box[3]+car_box[1])/2)
+        for box in self.prev_recognized_state:
+            if (car_box_center[0]>box[0] and car_box_center[0]<box[2] and
+                car_box_center[1] > box[1] and car_box_center[1] < box[3]):
+                return box[-1], (int((box[2]+box[0])/2),int((box[3]+box[1])/2)), box[-2]
+
+        return None, None, None
+
+
+
     def initScene(self, nCars):
 
         if nCars > 8:
             nCars = 8
         self.cars = []
         self.currentImage = self.backgroundImage.copy()
+
+        self.recognized_state = []
+        self.prev_recognized_state = self.recognized_state
+        self.recognized_cars_count = 0
 
         for i in range(nCars):
             isIntersection = True
@@ -274,13 +304,11 @@ class CrossroadSimulatorGUI(QMainWindow):
                         newCar['y'] = self.bresenhamPaths[car['route']][1][counter]
                         newCar['angle'] = self.bresenhamPaths[car['route']][2][counter]
 
-                        isIntersectionPrew = self.existIntersections(newCar, self.cars, longCoef=2.0, rightCoef=1.5)
-                        isIntersectionNew = self.existIntersections(newCar, newCars, longCoef=2.0, rightCoef=1.5)
+                        isIntersectionPrew = self.existIntersections(newCar, self.cars, longCoef=2.0, rightCoef=2.0)
+                        isIntersectionNew = self.existIntersections(newCar, newCars, longCoef=2.0, rightCoef=2.0)
                         isIntersection = isIntersectionPrew or isIntersectionNew
                         if not isIntersection:
                             car = newCar
-
-
                 else:
                     car['counter'] = 0
                     isIntersection = True
@@ -302,15 +330,76 @@ class CrossroadSimulatorGUI(QMainWindow):
                                                                           background_image=self.currentImage,
                                                                           full_mask_image=self.maskImage)
             self.cars = newCars
-            if(self.isMaskMode):
-                self.printImageOnLabel(self.maskImage, self.imageLabel)
-            else:
-                self.printImageOnLabel(self.currentImage, self.imageLabel)
+
             endTime = time.time()
             stepPeriod = endTime - startTime
 
             self.leTimeFromStart.setText(str(self.stepCounter))
             #self.leTimeFromStart.setText("%.4f" % stepPeriod)
+
+            #Recognition process
+            if self.isRecognize:
+                self.recognized_state = []
+                start_time = time.time()
+                input_image = cv2.cvtColor(self.currentImage, cv2.COLOR_BGR2RGB)
+                input_image = input_image / 255.0
+
+                net_input_image = cv2.resize(input_image,
+                                           (self.segmentation_image_width, self.segmentation_image_height))
+                net_input_image = np.reshape(net_input_image, (1,) + net_input_image.shape)
+
+                segmentation_result = self.segmentation_model.predict(net_input_image)
+                segmentation_mask = segmentation_result[0][:,:,0]
+                binary_mask = ((segmentation_mask > 0.9)*255).astype('uint8')
+
+                self.maskImage = cv2.resize(binary_mask,
+                                            (self.currentImage.shape[1], self.currentImage.shape[0]))
+
+                label_image = label(binary_mask)
+
+                scale = self.currentImage.shape[0]/net_input_image.shape[1]
+                area_threshold = 100
+                for region in regionprops(label_image):
+                    start_y, start_x, end_y, end_x = region.bbox
+                    start_y = int(start_y * scale)
+                    start_x = int(start_x * scale)
+                    end_y = int(end_y * scale)
+                    end_x = int(end_x * scale)
+                    if((end_y-start_y)*(end_x-start_x)>area_threshold):
+                        car_points = region.coords
+                        ellipse = cv2.fitEllipse(car_points)
+                        car_angle_mask = ellipse[2]
+                        car_box = [start_x, start_y, end_x, end_y, car_angle_mask]
+
+                        cv2.rectangle(self.currentImage,
+                                      (start_x, start_y), (end_x, end_y), (0, 255, 0), 2)
+
+                        #angle calculation based on previous recognition
+                        car_id, car_prev_center, car_prev_angle = self.findInPreviousState(car_box)
+                        if car_id is not None:
+                            car_new_center = (int((start_x+end_x)/2),int((start_y+end_y)/2))
+                            car_angle = self.painter.calc_angle(car_prev_center, car_new_center)
+                            if car_angle is None:
+                                car_angle = car_prev_angle
+                            car_box[4] = car_angle
+                            car_box.append(car_id)
+                        else:
+                            self.recognized_cars_count += 1
+                            car_box.append(self.recognized_cars_count)
+                        text = str(car_box[-1]) + ' : ' + str(int(car_box[-2])) #id : angle#
+                        cv2.putText(self.currentImage, text, (start_x, start_y-20),
+                                    cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), lineType=cv2.LINE_AA)
+                        self.recognized_state.append(car_box)
+                end_time = time.time()
+                duration = end_time - start_time
+
+                self.prev_recognized_state = self.recognized_state
+
+            if(self.isMaskMode):
+                self.printImageOnLabel(self.maskImage, self.imageLabel)
+            else:
+                self.printImageOnLabel(self.currentImage, self.imageLabel)
+
 
 
     def startButtonClicked(self):

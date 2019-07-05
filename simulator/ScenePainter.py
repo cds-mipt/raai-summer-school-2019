@@ -116,6 +116,8 @@ class ScenePainter:
         scalar_mult = np.dot(vector_car, vector_base)
 
         vector_car_len = np.sqrt(vector_car[0] ** 2 + vector_car[1] ** 2)
+        if vector_car_len == 0:
+            return None
         vector_base_len = 1
         cos = scalar_mult / (vector_car_len * vector_base_len)
 
@@ -305,28 +307,8 @@ class ScenePainter:
 #
 # background_image, mask_image = painter.show_car(x=background_image.shape[1]/2+20, y=background_image.shape[0]/2-35, angle=135,
 #                  car_index=None, background_image=None)
-# background_image, mask_image = painter.show_car(x=background_image.shape[1]/2-20, y=background_image.shape[0]/2+30, angle=-60,
-#                  car_index=None, background_image=None)
-# background_image, mask_image = painter.show_car(x=10, y=background_image.shape[0]/2+30, angle=0,
-#                  car_index=None, background_image=None)
-# background_image, mask_image = painter.show_car(x=background_image.shape[1]-200, y=background_image.shape[0]/2-30, angle=180,
-#                  car_index=None, background_image=None)
-# background_image, mask_image = painter.show_car(x=background_image.shape[1]-400, y=background_image.shape[0]/2-30, angle=180,
-#                  car_index=None, background_image=None)
-# background_image, mask_image = painter.show_car(x=background_image.shape[1]/2+40, y=background_image.shape[0]/2-200, angle=90,
-#                  car_index=None, background_image=None)
-# background_image, mask_image = painter.show_car(x=background_image.shape[1]/2-40, y=background_image.shape[0]/2+200, angle=-90,
-#                  car_index=None, background_image=None)
-# background_image, mask_image = painter.show_car(x=background_image.shape[1]/2+42, y=background_image.shape[0]/2-600, angle=90,
-#                  car_index=None, background_image=None)
-# background_image, mask_image = painter.show_car(x=background_image.shape[1]/2-45, y=background_image.shape[0]/2+700, angle=-90,
-#                  car_index=None, background_image=None)
-# background_image, mask_image = painter.show_car(x=background_image.shape[1]/2+300, y=background_image.shape[0]/2+35, angle=0,
-#                  car_index=None, background_image=None)
 #
 # t=datetime.fromtimestamp(time.time())
 # time_str = t.strftime("%Y-%m-%d-%H-%M-%S")
-#
-# #time_str = time.strftime("%Y-%m-%d %H:%M:%S", time.time())
 # out_path = painter.get_cars_out_path()+'/show-' + time_str + '.jpg'
 # cv2.imwrite(out_path, background_image)
