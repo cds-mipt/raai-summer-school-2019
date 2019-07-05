@@ -29,10 +29,11 @@ import gym_car_intersect
 
 
 from stable_baselines import DQN
+from unetdetector.model import *
 
 class DQNAgent:
-    def __init__(self, path="stable_baseline/saved_models/dqn/best_model.pkl"):
-        self.model = DQN.load(path)
+    def __init__(self, path_rl="stable_baseline/saved_models/dqn/best_model.pkl"):
+        self.model = DQN.load(path_rl)
 
     def __call__(self, state):
         action, _ = self.model.predict(state)

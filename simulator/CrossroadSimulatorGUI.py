@@ -16,7 +16,7 @@ import time
 import gym
 import gym_car_intersect
 
-env = gym.make('CarIntersect-v1')
+env = gym.make('CarIntersect-v2')
 
 class CrossroadSimulatorGUI(QMainWindow):
 
@@ -30,7 +30,8 @@ class CrossroadSimulatorGUI(QMainWindow):
         self.stepCounter = 0
         self.nCars = 4
         self.agent = agent
-        self.prev_state = env.reset()
+        self.curr_state = env.reset()
+        self.total_reward = 0
 
         self.painter = ScenePainter()
         self.backgroundImage = self.painter.load_background()
@@ -212,25 +213,26 @@ class CrossroadSimulatorGUI(QMainWindow):
         self.cars = []
         self.currentImage = self.backgroundImage.copy()
 
-        self.prev_states = env.reset()
-        for i in range(nCars):
-            car = {}
-
-            car['x'] = self.prev_states[3*i]*22 + 689
-            car['y'] = -self.prev_states[3*i+1]*22 + 689
-            car['angle'] = self.prev_states[3*i+2]/np.pi*180+90
-
-            car['speed'] = np.random.randint(5, 10)  # pixels per step
-            car['image_index'] = 3 if i==0 else np.random.randint(0, len(self.carLibrary))
-            car['sizes'] = self.carSizes[car['image_index']] ##(width, height)
-            car['index'] = i
-            self.cars.append(car)
-
-            self.currentImage, self.maskImage = self.painter.show_car(x=car['x'], y=car['y'], angle=car['angle'],
-                                                                      car_index=car['image_index'],
-                                                                      background_image=self.currentImage,
-                                                                      full_mask_image=self.maskImage)
-        self.printImageOnLabel(self.currentImage, self.imageLabel)
+        self.curr_state = env.reset()
+        self.total_reward = 0
+        # for i in range(nCars):
+        #     car = {}
+        #
+        #     car['x'] = self.curr_state[3*i]*22 + 689
+        #     car['y'] = -self.curr_state[3*i+1]*22 + 689
+        #     car['angle'] = np.degrees(self.curr_state[3*i+2])+90
+        #
+        #     car['speed'] = np.random.randint(5, 10)  # pixels per step
+        #     car['image_index'] = 3 if i==0 else np.random.randint(0, len(self.carLibrary))
+        #     car['sizes'] = self.carSizes[car['image_index']] ##(width, height)
+        #     car['index'] = i
+        #     self.cars.append(car)
+        #
+        #     self.currentImage, self.maskImage = self.painter.show_car(x=car['x'], y=car['y'], angle=car['angle'],
+        #                                                               car_index=car['image_index'],
+        #                                                               background_image=self.currentImage,
+        #                                                               full_mask_image=self.maskImage)
+        self.printImageOnLabel(self.curr_state, self.imageLabel)
 
     def simulatorMotion(self):
         if self.mode == 1:
@@ -241,24 +243,29 @@ class CrossroadSimulatorGUI(QMainWindow):
             self.maskImage = np.zeros((self.backgroundImage.shape[0],
                                        self.backgroundImage.shape[1]), dtype='uint8')
 
-            actions = self.agent(self.prev_state)
-            self.prev_states, _, done, _ = env.step(actions)
+            #===INSERT IMAGE TO COORD===========================================
+            
+            #===================================================================
 
-            for i, car in enumerate(self.cars):
-
-                car['angle'] = np.degrees(self.prev_states[3*i+2])+90
-                car['x'] = self.prev_states[3*i]*22 + 689
-                car['y'] = -self.prev_states[3*i+1]*22 + 689
-
-                self.currentImage, self.maskImage = self.painter.show_car(x=car['x'], y=car['y'], angle=car['angle'],
-                                                                          car_index=car['image_index'],
-                                                                          background_image=self.currentImage,
-                                                                          full_mask_image=self.maskImage)
+            actions = self.agent(self.curr_state_coord)
+            self.curr_state, reward, done, _ = env.step(actions)
+            self.total_reward += reward
+            #
+            # for i, car in enumerate(self.cars):
+            #
+            #     car['angle'] = np.degrees(self.curr_state[3*i+2])+90
+            #     car['x'] = self.curr_state[3*i]*22 + 689
+            #     car['y'] = -self.curr_state[3*i+1]*22 + 689
+            #
+            #     self.currentImage, self.maskImage = self.painter.show_car(x=car['x'], y=car['y'], angle=car['angle'],
+            #                                                               car_index=car['image_index'],
+            #                                                               background_image=self.currentImage,
+            #                                                               full_mask_image=self.maskImage)
 
             if(self.isMaskMode):
                 self.printImageOnLabel(self.maskImage, self.imageLabel)
             else:
-                self.printImageOnLabel(self.currentImage, self.imageLabel)
+                self.printImageOnLabel(self.curr_state, self.imageLabel)
             endTime = time.time()
             stepPeriod = endTime - startTime
 

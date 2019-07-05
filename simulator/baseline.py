@@ -45,13 +45,13 @@ def callback(_locals, _globals):
 
 # Create and wrap the environment
 from utils import *
-# env = make_env('CarIntersect-v1', model_name='dqn')
+env = make_env('CarIntersect-v1', model_name='dqn')
 
-# Model for participants of hackaton using prepared net
-import torch
-import torch.nn as nn
-net = nn.Sequential(nn.Linear(3*1378**2, 3*4), nn.Sigmoid())
-env = make_env("CarIntersect-v2", net, "torch", model_name='dqn')
+# # Model for participants of hackaton using prepared net
+# import torch
+# import torch.nn as nn
+# net = nn.Sequential(nn.Linear(3*1378**2, 3*4), nn.Sigmoid())
+# env = make_env("CarIntersect-v2", net, "torch", model_name='dqn')
 
 # Logs will be saved in log_dir/monitor.csv
 env = Monitor(env, log_dir, allow_early_resets=True)
@@ -61,7 +61,7 @@ env.reset()
 class CustomPolicy(FeedForwardPolicy):
     def __init__(self, *args, **kwargs):
         super(CustomPolicy, self).__init__(*args, **kwargs,
-                                           layers=[32, 32],
+                                           layers=[256, 256],
                                            layer_norm=False,
                                            feature_extraction="mlp")
 
