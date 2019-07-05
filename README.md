@@ -24,7 +24,7 @@ The solution of the hackathon task involves working with an crossroad simulator 
 
 ### Datasets
 
-- Dataset for car segmentation (500 color images and masks) on images: [Link on dataset](https://yadi.sk/d/Cb5C5JXFwwmLJg)
+- Dataset for car segmentation (500 color images and masks) on images: [Link](https://yadi.sk/d/Cb5C5JXFwwmLJg)
 
 - Dataset for reinforcement learning task: Link will be soon..
 
