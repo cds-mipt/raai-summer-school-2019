@@ -24,8 +24,10 @@ The solution of the hackathon task involves working with an crossroad simulator 
 - The winners of the hackathon will have the opportunity to undergo an internship at [the Laboratory of Cognitive Dynamic Systems of MIPT](https://mipt.ru/science/labs/cognitive-dynamic-systems/), as well as give an advantage in entering [the new master's program “Methods and Technologies of Artificial Intelligence”](https://mipt.ru/education/departments/fpmi/master/methods-technologies-ai), which opens in 2019 at MIPT.
 
 ### Datasets
-Dataset for car segmentation (color images and masks) on images: [Link on dataset with 500 images](https://yadi.sk/d/Cb5C5JXFwwmLJg)
-Dataset for reinforcement learning task: Link will be soon..
+
+- Dataset for car segmentation (500 color images and masks) on images: [Link on dataset](https://yadi.sk/d/Cb5C5JXFwwmLJg)
+
+- Dataset for reinforcement learning task: Link will be soon..
 
 ### Metrics
 The organizers analyze 3 quality metrics of the participant decisions:
