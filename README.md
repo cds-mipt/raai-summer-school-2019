@@ -1,5 +1,4 @@
 
-
 ## Demo solution of Hackathon 1. “Computer vision and reinforcement learning”
 
 ### Task description
@@ -42,3 +41,9 @@ The team with the highest total score wins. The final total score is formed by t
 I = A – (0.4ꞏN1+0.5ꞏN2+0.1ꞏN3), 
 
 where A – total number of teams, Ni – occupied place in the rating on the i-th quality metric.
+
+### Schedule
+
+13:00 5 July, Phystech.Arctic, 4 floor, Room 4.25 - Team building from registered participants, server access grainting, task consultations
+13:00 7 July, Phystech.Arctic, 4 floor, Room 4.25 - Running of solutions on test data
+16:00 7 July, Phystech.Digit Lecture Hall, 4 floor, Room 4.20 - Presentation of solutions
