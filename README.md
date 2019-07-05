@@ -48,6 +48,10 @@ where A – total number of teams, Ni – occupied place in the rating on the i-
 
 13:00 5 July, Phystech.Arctic, 4 floor, Room 4.24 - Team building from registered participants, server access grainting, task consultations
 
+10:00 - 14:00, 6 July, Phystech.Arctic, 4 floor, Room 4.24 - Consultations
+
+10:00 - 13:00, 7 July, Phystech.Arctic, 4 floor, Room 4.24 - Consultations
+
 13:00 7 July, Phystech.Arctic, 4 floor, Room 4.24 - Running of solutions on test data
 
 16:00 7 July, Phystech.Arctic Lecture Hall, 4 floor, Room 4.20 - Presentation of solutions
