@@ -6,8 +6,11 @@
 
 In the modern world, the creation of smart roads and smart cities through which unmanned vehicles drive is being actively researched.
 Driving a car in autonomous mode through a crossroad is one of the objectives of such research. Obtaining information about the traffic situation at the crossroad is possible using sensors installed on the car, and information from external systems. Such an external system can be an unmanned aerial vehicle (UAV), hovering above the crossroad and having the possibility of reliable recognition of road users.
+
 The task of planning the movement of an autonomous vehicle through such an crossroad can be solved either on the basis of pre-programmed scenarios or using a prospective approach based on deep reinforcement learning.
+
 A special and high role in the development, debugging and research of artificial intelligence systems using computer vision and reinforcement learning methods is played by computer simulators.
+
 The solution of the hackathon task involves working with an crossroad simulator created in the laboratory of cognitive dynamic systems of MIPT based on a UAV video and creating the best quality algorithm for driving an autonomous car through an crossroad without collisions with other vehicles.
 
 ![Scheme](https://github.com/cds-mipt/raai-summer-school-2019/blob/master/readme_files/Scheme-EN.png)
@@ -18,8 +21,19 @@ The solution of the hackathon task involves working with an crossroad simulator 
 - Learn how to work with popular deep learning libraries Keras and Tensorflow for solving computer vision tasks and pyTorch for reinforcement learning.
 - Learn how to debug a Python program on a server with GPU on video cards with support for Nvidia CUDA technology.
 - Develop a prototype of program to control the unmanned vehicle at the crossroad.
-- The winners of the hackathon will have the opportunity to undergo an internship at the Laboratory of Cognitive Dynamic Systems of MIPT, as well as give an advantage in entering the new master's program “Methods and Technologies of Artificial Intelligence”, which opens in 2019 at MIPT.
+- The winners of the hackathon will have the opportunity to undergo an internship at [the Laboratory of Cognitive Dynamic Systems of MIPT](https://mipt.ru/science/labs/cognitive-dynamic-systems/), as well as give an advantage in entering [the new master's program “Methods and Technologies of Artificial Intelligence”](https://mipt.ru/education/departments/fpmi/master/methods-technologies-ai), which opens in 2019 at MIPT.
 
 ### Datasets
 Will be soon..
 
+### Metrics
+The organizers analyze 3 quality metrics of the participant decisions:
+1) Average Precision (AP) quality measure for cars detection implemented by participants compared to the reference labeling of a test sample. To do this, organisers will use the open source utility [https://github.com/rafaelpadilla/Object-Detection-Metrics] (should be maximized);
+2) reward to autonomous car for the reinforcement learning task,
+3) the quality of the solution presentation.
+
+The teams demonstrate their decisions in the form of a presentation about the features of the technical implementation, indicating the prospects for the application (from 16:00 on July 7, 2019).
+
+The team with the highest total score wins. The final total score is formed by the formula
+I = A – (0.4ꞏN1+0.5ꞏN2+0.1ꞏN3), 
+where A – total number of teams, Ni – occupied place in the rating on the i-th quality metric.
