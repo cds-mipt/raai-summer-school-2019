@@ -749,6 +749,21 @@ class CarRacingHackaton(gym.Env, EzPickle):
                                                                       car_index=self.image[i],
                                                                       background_image=self.state,
                                                                       full_mask_image=maskImage)
+        state_x = self.car.hull.position.x
+        state_y = self.car.hull.position.y
+        angle = self.car.hull.angle
+        state_velocity = self.car.hull.linearVelocity
+        end1, end2 = PATH[self.car.hull.path][-1]
+        self.state_coord = [state_x, state_y, angle]
+
+        for car in self.bot_cars:
+            state_x = car.hull.position.x
+            state_y = car.hull.position.y
+            angle = car.hull.angle
+            self.state_coord.extend([state_x, state_y, angle])
+        self.state_coord = np.array(self.state_coord)
+
+        self.state = (self.state, self.state_coord)
 
         # collision
         # basically i found each bos2d body in self.car and for each put listener in userData.collision:

@@ -3,7 +3,9 @@ import gym_car_intersect
 import matplotlib.pyplot as plt
 
 env = gym.make("CarIntersect-v2")
-plt.imshow(env.reset())
+s = env.reset()
+plt.imshow(s[0])
+s[1]
 
 import torch
 import torch.nn as nn
