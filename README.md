@@ -48,5 +48,5 @@ where A – total number of teams, Ni – occupied place in the rating on the i-
 
 13:00 7 July, Phystech.Arctic, 4 floor, Room 4.25 - Running of solutions on test data
 
-16:00 7 July, Phystech.Digit Lecture Hall, 4 floor, Room 4.20 - Presentation of solutions
+16:00 7 July, Phystech.Arctic Lecture Hall, 4 floor, Room 4.20 - Presentation of solutions
 
