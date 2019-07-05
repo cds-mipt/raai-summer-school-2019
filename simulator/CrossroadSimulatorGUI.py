@@ -14,6 +14,8 @@ from datetime import datetime
 
 import time
 
+os.environ["CUDA_VISIBLE_DEVICES"] = "1" #Change it to the free GPU
+
 from unetdetector.model import *
 from unetdetector.data import *
 from skimage.measure import label, regionprops
