@@ -3,9 +3,9 @@
 
 ### Task description
 
-[Task presentation](https://yadi.sk/i/S9dYSvqOCHTwWA)
+- [Task presentation](https://yadi.sk/i/S9dYSvqOCHTwWA)
 
-[Instructions on task implementation on MIPT Server](https://docs.google.com/document/d/12R8UmFpnrWTzCJxO73qNU_XZx5z4x88b9QhQPIC88vc/edit?usp=sharing)
+- [Instructions on task implementation on MIPT Server](https://docs.google.com/document/d/12R8UmFpnrWTzCJxO73qNU_XZx5z4x88b9QhQPIC88vc/edit?usp=sharing)
 
 In the modern world, the creation of smart roads and smart cities through which unmanned vehicles drive is being actively researched.
 Driving a car in autonomous mode through a crossroad is one of the objectives of such research. Obtaining information about the traffic situation at the crossroad is possible using sensors installed on the car, and information from external systems. Such an external system can be an unmanned aerial vehicle (UAV), hovering above the crossroad and having the possibility of reliable recognition of road users.
