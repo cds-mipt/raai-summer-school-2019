@@ -43,7 +43,9 @@ FPS         = 50
 ZOOM        = 7.5 # Changes: 2.7        # Camera zoom
 ZOOM_FOLLOW = False      # Set to False for fixed view (don't use zoom)
 
-ROAD_WIDTH = 4.3/SCALE
+SHOW_SCALE = 2 * PLAYFIELD / backgroundImage.shape[0]
+
+ROAD_WIDTH = 4.3/SCALE*1.2
 SIDE_WALK = 4/SCALE
 
 ROAD_COLOR = [1, 1, 1,] #[0.44, 0.44, 0.44] # change color
@@ -53,7 +55,7 @@ SMALL_TURN = ROAD_WIDTH*0.5
 BIG_TURN = ROAD_WIDTH*1.5
 START_1, START_2 = (-ROAD_WIDTH, ROAD_WIDTH), (-ROAD_WIDTH, -ROAD_WIDTH)
 START_3, START_4 = (ROAD_WIDTH, -ROAD_WIDTH), (ROAD_WIDTH, ROAD_WIDTH)
-OUT_DIST = 2 # how far from the view screen to restart new car
+OUT_DIST = 0 # how far from the view screen to restart new car
 TARGET_2, TARGET_4 = (-PLAYFIELD-OUT_DIST, ROAD_WIDTH/2), (-ROAD_WIDTH/2, -PLAYFIELD-OUT_DIST)
 TARGET_6, TARGET_8 = (PLAYFIELD+OUT_DIST, -ROAD_WIDTH/2), (ROAD_WIDTH/2, PLAYFIELD+OUT_DIST)
 PATH = {
@@ -616,27 +618,35 @@ class CarRacingHackaton(gym.Env, EzPickle):
             # Generate Bot Cars:
             self.bot_cars = []
             self.bot_targets = []
-            init_coord = [(-np.pi/2, -PLAYFIELD+15, -ROAD_WIDTH/2),
-                          (0, ROAD_WIDTH/2, -PLAYFIELD+20),
-                          (np.pi/2, PLAYFIELD-30, ROAD_WIDTH/2),
-                          (np.pi, -ROAD_WIDTH/2, PLAYFIELD-15)]
+            # init_coord = [(-np.pi/2, -PLAYFIELD+15, -ROAD_WIDTH/2),
+            #               (0, ROAD_WIDTH/2, -PLAYFIELD+20),
+            #               (np.pi/2, PLAYFIELD-30, ROAD_WIDTH/2),
+            #               (np.pi, -ROAD_WIDTH/2, PLAYFIELD-15)]
+            init_coord = [(-np.pi / 2, -PLAYFIELD + OUT_DIST, -ROAD_WIDTH / 2),
+                          (0, ROAD_WIDTH / 2, -PLAYFIELD + OUT_DIST),
+                          (np.pi / 2, PLAYFIELD - OUT_DIST, ROAD_WIDTH / 2),
+                          (np.pi, -ROAD_WIDTH / 2, PLAYFIELD - OUT_DIST)]
 
             # init_colors = [(0.8, 0.4, 1), (1, 0.5, 0.1), (0.1, 1, 0.1), (0.2, 0.8, 1)]
             # trajectory = ['38', '52', '74', '96']
             # self.bot_targets.extend([t[0] for t in trajectory])
             for i in range(self.num_bots):
                 if self.start_file:
-                    target, new_coord = self.start_file_position(forward_shift=10, number=i+1)
+                    target, new_coord = self.start_file_position(forward_shift=OUT_DIST, number=i+1)
                 else:
-                    target, new_coord = self.random_position(forward_shift=10)
+                    target, new_coord = self.random_position(forward_shift=OUT_DIST)
                 self.bot_targets.append(target[0])
+                bot_id = np.random.randint(1, len(carLibrary))
+                bot_sizes = carSizes[bot_id]
+                new_coord = np.hstack((new_coord, [bot_sizes[0], bot_sizes[1]]))
                 car = DummyCar(self.world, new_coord, color=None, bot=True)
                 # j = 2*i+4 if 2*i+4 < 9 else 2
                 car.hull.path = target #f"{2*i+3}{j}"
                 car.userData = self.car
                 self.bot_cars.append(car)
                 # Changes
-                self.image.append(np.random.randint(1, len(carLibrary)))
+
+                self.image.append([bot_id, bot_sizes])
 
         # Generate Agent:
         if not self.agent:
@@ -647,10 +657,11 @@ class CarRacingHackaton(gym.Env, EzPickle):
                 target, init_coord = self.start_file_position(forward_shift=5, bot=False)
             else:
                 target, init_coord = self.random_position(forward_shift=5, bot=False)
-            self.image.append(0)
+            self.image.append([0, carSizes[0]])
         # target, init_coord = '38', (-np.pi/2, -PLAYFIELD+15, -ROAD_WIDTH/2+2)
         penalty_sections = {2, 3, 4, 5, 6, 7, 8, 9} - set(map(int, target))
         car_color = None #(0,0,0) # change color
+        init_coord = np.hstack((init_coord, [carSizes[0][0], carSizes[0][1]]))
         self.car = DummyCar(self.world, init_coord, penalty_sections, color=car_color)
         self.car.hull.path = target
         self.car.userData = self.car
@@ -709,6 +720,9 @@ class CarRacingHackaton(gym.Env, EzPickle):
                             target, new_coord = self.random_position()
                         # new_color = np.random.rand(3) #car.hull.color
                         new_color = car.hull.color #[0, 0, 0] #car.hull.color # change color
+
+                        ###############################################################
+                        new_coord = np.hstack((new_coord, [carSizes[i][0], carSizes[i][1]]))
                         new_car = DummyCar(self.world, new_coord, color=new_color, bot=True)
                         new_car.hull.path = target
                         new_car.userData = new_car
@@ -732,23 +746,43 @@ class CarRacingHackaton(gym.Env, EzPickle):
         # self.state = self.render("state_pixels")
         # state_angle = self.car.hull.angle
         # Changes
-        state_x = self.car.hull.position.x*22 + 689
-        state_y = -self.car.hull.position.y*22 + 689
+        # state_x = self.car.hull.position.x*22 + 689
+        # state_y = -self.car.hull.position.y*22 + 689
+        state_x = self.car.hull.position.x / SHOW_SCALE + backgroundImage.shape[1] / 2
+        state_y = -self.car.hull.position.y / SHOW_SCALE + backgroundImage.shape[0] / 2
         angle = np.degrees(self.car.hull.angle) + 90
+        self.current_image = backgroundImage.copy()
         maskImage = np.zeros((backgroundImage.shape[0],
                               backgroundImage.shape[1]), dtype='uint8')
-        self.state, maskImage = painter.show_car(x=state_x, y=state_y, angle=angle,
-                                                                  car_index=self.image[-1],
-                                                                  background_image=backgroundImage,
+        # agent_sizes = self.image[-1][1]
+        # state_x = int(state_x - (agent_sizes[0] / 2) * np.cos(np.radians(angle)) -
+        #               (agent_sizes[1] / 2) * np.sin(np.radians(angle)))
+        # state_y = int(state_y + (agent_sizes[0] / 2) * np.sin(np.radians(angle)) -
+        #               (agent_sizes[1] / 2) * np.cos(np.radians(angle)))
+        self.current_image, maskImage = painter.show_car(x=state_x, y=state_y, angle=angle,
+                                                                  car_index=self.image[-1][0],
+                                                                  background_image=self.current_image,
                                                                   full_mask_image=maskImage)
         for i, car in enumerate(self.bot_cars):
-            state_x = car.hull.position.x*22 + 689
-            state_y = -car.hull.position.y*22 + 689
+            # state_x = car.hull.position.x*22 + 689
+            # state_y = -car.hull.position.y*22 + 689
+            # angle = np.degrees(car.hull.angle) + 90
+            state_x = car.hull.position.x / SHOW_SCALE + backgroundImage.shape[1]/2
+            state_y = -car.hull.position.y / SHOW_SCALE + backgroundImage.shape[0]/2
             angle = np.degrees(car.hull.angle) + 90
-            self.state, maskImage = painter.show_car(x=state_x, y=state_y, angle=angle,
-                                                                      car_index=self.image[i],
-                                                                      background_image=self.state,
+
+            # bot_sizes = self.image[i][1]
+            # state_x = int(state_x - (bot_sizes[0] / 2) * np.cos(np.radians(angle)) -
+            #     (bot_sizes[1] / 2) * np.sin(np.radians(angle)))
+            # state_y = int( state_y + (bot_sizes[0] / 2) * np.sin(np.radians(angle)) -
+            #                (bot_sizes[1] / 2) * np.cos(np.radians(angle)))
+
+            self.current_image, maskImage = painter.show_car(x=int(state_x), y=int(state_y), angle=angle,
+                                                                      car_index=self.image[i][0],
+                                                                      background_image=self.current_image,
                                                                       full_mask_image=maskImage)
+        self.state = self.current_image
+
         state_x = self.car.hull.position.x
         state_y = self.car.hull.position.y
         angle = self.car.hull.angle

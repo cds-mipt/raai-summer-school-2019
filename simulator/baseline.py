@@ -45,7 +45,7 @@ def callback(_locals, _globals):
 
 # Create and wrap the environment
 from utils import *
-env = make_env('CarIntersect-v1', model_name='dqn')
+env = make_env('CarIntersect-v2', model_name='dqn')
 
 # # Model for participants of hackaton using prepared net
 # import torch

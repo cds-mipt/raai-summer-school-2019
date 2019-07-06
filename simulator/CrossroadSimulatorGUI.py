@@ -64,12 +64,15 @@ class CrossroadSimulatorGUI(QMainWindow):
 
         self.recognizeButton = QPushButton("Activate recognition")
         self.maskButton = QPushButton("Show mask")
-        self.rlButton = QPushButton("Activate RL mode")
+        #self.rlButton = QPushButton("Activate RL mode")
 
         self.stopButton.setEnabled(False)
         self.recognizeButton.setEnabled(False)
         self.maskButton.setEnabled(False)
-        self.rlButton.setEnabled(False)
+        #self.rlButton.setEnabled(False)
+
+        self.lRLReward = QLabel('Reward:')
+        self.leRLReward = QLineEdit('-')
 
         self.carsNumber= QLabel('Number of cars:')
         self.leCarsNumber = QLineEdit('4')
@@ -91,7 +94,7 @@ class CrossroadSimulatorGUI(QMainWindow):
         self.stopButton.clicked.connect(self.stopButtonClicked)
         self.recognizeButton.clicked.connect(self.recognizeButtonClicked)
         self.maskButton.clicked.connect(self.maskButtonClicked)
-        self.rlButton.clicked.connect(self.rlButtonClicked)
+        #self.rlButton.clicked.connect(self.rlButtonClicked)
 
         self.hbox = QHBoxLayout()
 
@@ -100,8 +103,10 @@ class CrossroadSimulatorGUI(QMainWindow):
 
         self.hbox.addWidget(self.recognizeButton)
         self.hbox.addWidget(self.maskButton)
-        self.hbox.addWidget(self.rlButton)
+        #self.hbox.addWidget(self.rlButton)
 
+        self.hbox.addWidget(self.lRLReward)
+        self.hbox.addWidget(self.leRLReward)
 
         self.hbox.addWidget(self.carsNumber)
         self.hbox.addWidget(self.leCarsNumber)
@@ -214,7 +219,11 @@ class CrossroadSimulatorGUI(QMainWindow):
         self.currentImage = self.backgroundImage.copy()
 
         self.curr_state = env.reset()
+        self.currentImage = self.curr_state[0]
+        self.curr_state_coord = self.curr_state[1]
         self.total_reward = 0
+
+        self.leRLReward.setText(str(self.total_reward))
         # for i in range(nCars):
         #     car = {}
         #
@@ -232,7 +241,7 @@ class CrossroadSimulatorGUI(QMainWindow):
         #                                                               car_index=car['image_index'],
         #                                                               background_image=self.currentImage,
         #                                                               full_mask_image=self.maskImage)
-        self.printImageOnLabel(self.curr_state, self.imageLabel)
+        self.printImageOnLabel(self.currentImage, self.imageLabel)
 
     def simulatorMotion(self):
         if self.mode == 1:
@@ -249,6 +258,8 @@ class CrossroadSimulatorGUI(QMainWindow):
 
             actions = self.agent(self.curr_state_coord)
             self.curr_state, reward, done, _ = env.step(actions)
+            self.currentImage = self.curr_state[0]
+            self.curr_state_coord = self.curr_state[1]
             self.total_reward += reward
             #
             # for i, car in enumerate(self.cars):
@@ -261,15 +272,17 @@ class CrossroadSimulatorGUI(QMainWindow):
             #                                                               car_index=car['image_index'],
             #                                                               background_image=self.currentImage,
             #                                                               full_mask_image=self.maskImage)
+            # out_img = self.curr_state[0]
 
             if(self.isMaskMode):
                 self.printImageOnLabel(self.maskImage, self.imageLabel)
             else:
-                self.printImageOnLabel(self.curr_state, self.imageLabel)
+                self.printImageOnLabel(self.currentImage, self.imageLabel)
             endTime = time.time()
             stepPeriod = endTime - startTime
 
             self.leTimeFromStart.setText(str(self.stepCounter))
+            self.leRLReward.setText(str(self.total_reward))
             #self.leTimeFromStart.setText("%.4f" % stepPeriod)
 
             if done:
@@ -283,7 +296,7 @@ class CrossroadSimulatorGUI(QMainWindow):
             self.stopButton.setEnabled(True)
             self.recognizeButton.setEnabled(True)
             self.maskButton.setEnabled(True)
-            self.rlButton.setEnabled(True)
+            #self.rlButton.setEnabled(True)
             self.nCars = int(self.leCarsNumber.text())
             self.initScene(self.nCars)
             self.startTime = time.time()
@@ -303,7 +316,7 @@ class CrossroadSimulatorGUI(QMainWindow):
         self.stopButton.setEnabled(False)
         self.recognizeButton.setEnabled(False)
         self.maskButton.setEnabled(False)
-        self.rlButton.setEnabled(False)
+        #self.rlButton.setEnabled(False)
         self.timer.stop()
         self.nCars = int(self.leCarsNumber.text())
         self.initScene(self.nCars)
@@ -330,14 +343,14 @@ class CrossroadSimulatorGUI(QMainWindow):
             self.maskButton.setText('Show mask')
             self.isMaskMode = False
 
-    def rlButtonClicked(self):
-
-        if (not self.isRLMode):
-            self.rlButton.setText('Deactivate RL Mode')
-            self.isRLMode = True
-        else:
-            self.rlButton.setText('Activate RL Mode')
-            self.isRLMode = False
+    # def rlButtonClicked(self):
+    #
+    #     if (not self.isRLMode):
+    #         self.rlButton.setText('Deactivate RL Mode')
+    #         self.isRLMode = True
+    #     else:
+    #         self.rlButton.setText('Activate RL Mode')
+    #         self.isRLMode = False
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

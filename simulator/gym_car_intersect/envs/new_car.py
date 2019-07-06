@@ -3,6 +3,7 @@ import bisect
 import math
 import Box2D
 from Box2D.b2 import (edgeShape, circleShape, fixtureDef, polygonShape, revoluteJointDef, contactListener, shape)
+#from hack_env_discrete import SHOW_SCALE
 
 # Top-down car dynamics simulation.
 #
@@ -11,12 +12,13 @@ from Box2D.b2 import (edgeShape, circleShape, fixtureDef, polygonShape, revolute
 #
 # Created by Oleg Klimov. Licensed on the same terms as the rest of OpenAI Gym.
 
-SIZE = 0.02
-ENGINE_POWER            = 100000000*SIZE*SIZE
-WHEEL_MOMENT_OF_INERTIA = 4000*SIZE*SIZE
-FRICTION_LIMIT          = 1000000*SIZE*SIZE     # friction ~= mass ~= size^2 (calculated implicitly using density)
-WHEEL_R  = 27
-WHEEL_W  = 14
+SIZE = 80/1378.0  #SHOW_SCALE #0.02
+MC = SIZE/0.02
+ENGINE_POWER            = 100000000*SIZE*SIZE/MC/MC
+WHEEL_MOMENT_OF_INERTIA = 4000*SIZE*SIZE/MC#/MC
+FRICTION_LIMIT          = 1000000*SIZE*SIZE/MC/MC#/2     # friction ~= mass ~= size^2 (calculated implicitly using density)
+WHEEL_R  = 27/MC
+WHEEL_W  = 14/MC
 CENTROID = 220 # that is point which follows target in car...
 WHEELPOS = [
     (-45,+60-CENTROID), (+45,+60-CENTROID),
@@ -61,19 +63,42 @@ class DummyCar:
             Selfexplanatory
         """
 
-        init_angle, init_x, init_y = init_coord
-        SENSOR = SENSOR_BOT if bot else SENSOR_SHAPE
+        init_angle, init_x, init_y, width_y, height_x = init_coord
+
+        CAR_HULL_POLY4 = [
+            (-height_x/2, -width_y/2), (+height_x/2, -width_y/2),
+            (-height_x/2, +width_y/2), (+height_x/2, +width_y/2)
+        ]
+        N_SENSOR_BOT = [
+            (-height_x/2*1.11, +width_y/2*1.0), (+height_x/2*1.11, +width_y/2*1.0), #(-height_x/2*1.11, +width_y/2*1.11), (+height_x/2*1.11, +width_y/2*1.11),
+            (-height_x/2*0.8, +width_y/2*3), (+height_x/2*0.8, +width_y/2*3) #(-height_x/2*0.22, +width_y/2*2), (+height_x/2*0.22, +width_y/2*2)
+        ]
+        WHEELPOS = [
+            (-height_x / 2, +width_y / 2 / 2), (+height_x / 2, +width_y / 2 / 2),
+            (-height_x / 2, -width_y / 2 / 2), (+height_x / 2, -width_y / 2 / 2)
+        ]
+
+        N_SENSOR_SHAPE = CAR_HULL_POLY4
+
+        SENSOR = N_SENSOR_BOT if bot else N_SENSOR_SHAPE
         self.world = world
         # # make two sensor dots close and far...
         # additional_fixture = [fixtureDef(shape=polygonShape(vertices=[(x*SIZE, y*SIZE) for x, y in SENSOR_ADD]),
         #                                 isSensor=True, userData='sensor')] if bot else []
+        # self.hull = self.world.CreateDynamicBody(
+        #     position = (init_x, init_y),
+        #     angle = init_angle,
+        #     fixtures = [fixtureDef(shape = polygonShape(vertices=[ (x*SIZE,y*SIZE) for x,y in HULL_POLY4 ]),
+        #                         density=1.0, userData='body'),
+        #                 fixtureDef(shape = polygonShape(vertices=[(x*SIZE, y*SIZE) for x, y in SENSOR]),
+        #                         isSensor=True, userData='sensor')])# + additional_fixture)
         self.hull = self.world.CreateDynamicBody(
-            position = (init_x, init_y),
-            angle = init_angle,
-            fixtures = [fixtureDef(shape = polygonShape(vertices=[ (x*SIZE,y*SIZE) for x,y in HULL_POLY4 ]),
-                                density=1.0, userData='body'),
-                        fixtureDef(shape = polygonShape(vertices=[(x*SIZE, y*SIZE) for x, y in SENSOR]),
-                                isSensor=True, userData='sensor')])# + additional_fixture)
+            position=(init_x, init_y),
+            angle=init_angle,
+            fixtures=[fixtureDef(shape=polygonShape(vertices=[(x*SIZE, y*SIZE) for x, y in CAR_HULL_POLY4]),
+                                 density=1.0, userData='body'),
+                      fixtureDef(shape=polygonShape(vertices=[(x*SIZE, y*SIZE) for x, y in SENSOR]),
+                                 isSensor=True, userData='sensor')])
         self.hull.color = color or ((0.2, 0.8, 1) if bot else (0.8,0.0,0.0))
         self.hull.name = 'bot_car' if bot else 'car'
         self.hull.cross_time = float('inf')
