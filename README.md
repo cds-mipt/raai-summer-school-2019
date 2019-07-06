@@ -88,3 +88,17 @@ where A – total number of teams, Ni – occupied place in the rating on the i-
 
 16:00 7 July, Phystech.Arctic Lecture Hall, 4 floor, Room 4.20 - Presentation of solutions
 
+### Results
+
+| Team | AP of car detection | RL reward | Presentation | Total score |
+| :--- | :--- | :--- | :--- | :--- | 
+| team01 | - | - | - | -  | -  | 
+| team02 | - | - | - | -  | -  | 
+| team03 | - | - | - | -  | -  | 
+| team04 | - | - | - | -  | -  | 
+| team05 | - | - | - | -  | -  | 
+| team06 | - | - | - | -  | -  | 
+| team07 | - | - | - | -  | -  | 
+| team08 | - | - | - | -  | -  | 
+| team09 | - | - | - | -  | -  | 
+| team10 | - | - | - | -  | -  | 
