@@ -30,7 +30,7 @@ The solution of the hackathon task involves working with an crossroad simulator 
 
 ### Datasets
 
-- Dataset for car segmentation and detection  on images: [Link to dataset .zip archive](https://yadi.sk/d/nb_kC-DmGcqoqA)
+- Training dataset for car segmentation and detection  on images: [Link to training dataset .zip archive](https://yadi.sk/d/nb_kC-DmGcqoqA)
 
 Dataset includes 500 color images, masks and bounding boxes and contains 3 folders:
 
@@ -47,6 +47,8 @@ car 1 156 103 336
 car 36 111 198 416
 car 91 42 338 500
 ```
+
+- Testing dataset for car segmentation and detection  on images: will appear here after 13:00 07 July
 
 ### Metrics
 The organizers analyze 3 quality metrics of the participant decisions:
