@@ -3,11 +3,11 @@
 
 ### Task description
 
-- [Task presentation](https://yadi.sk/i/S9dYSvqOCHTwWA)
+- **[Task presentation](https://yadi.sk/i/S9dYSvqOCHTwWA)**
 
-- [Instructions on task implementation on MIPT Server](https://docs.google.com/document/d/12R8UmFpnrWTzCJxO73qNU_XZx5z4x88b9QhQPIC88vc/edit?usp=sharing)
+- **[Instructions on task implementation on MIPT Server](https://docs.google.com/document/d/12R8UmFpnrWTzCJxO73qNU_XZx5z4x88b9QhQPIC88vc/edit?usp=sharing)**
 
-- [Telegram Channel for Questions](https://t.me/joinchat/GdNiZhcY5fGQepbVrHJ6LQ)
+- **[Telegram Channel for Questions](https://t.me/joinchat/GdNiZhcY5fGQepbVrHJ6LQ)**
 
 In the modern world, the creation of smart roads and smart cities through which unmanned vehicles drive is being actively researched.
 Driving a car in autonomous mode through a crossroad is one of the objectives of such research. Obtaining information about the traffic situation at the crossroad is possible using sensors installed on the car, and information from external systems. Such an external system can be an unmanned aerial vehicle (UAV), hovering above the crossroad and having the possibility of reliable recognition of road users.
@@ -30,7 +30,7 @@ The solution of the hackathon task involves working with an crossroad simulator 
 
 ### Datasets
 
-- Training dataset for car segmentation and detection  on images: [Link to training dataset .zip archive](https://yadi.sk/d/nb_kC-DmGcqoqA)
+- **Training dataset for car segmentation and detection  on images:** [Link to training dataset .zip archive](https://yadi.sk/d/nb_kC-DmGcqoqA)
 
 Dataset includes 500 color images, masks and bounding boxes and contains 3 folders:
 
@@ -48,11 +48,12 @@ car 36 111 198 416
 car 91 42 338 500
 ```
 
-- Testing dataset for car segmentation and detection  on images: will appear here after 13:00 07 July
+- **Testing dataset for car segmentation and detection  on images:** will appear here after 13:00 07 July
 
 ### Metrics
 The organizers analyze 3 quality metrics of the participant decisions:
-1) Average Precision (AP) quality measure for cars detection implemented by participants compared to the reference labeling of a test sample. To do this, organisers will use the open source utility [https://github.com/rafaelpadilla/Object-Detection-Metrics] (should be maximized);
+
+**1) Average Precision (AP) quality measure for cars detection implemented by participants compared to the reference labeling of a test sample**. To do this, organisers will use the open source utility [https://github.com/rafaelpadilla/Object-Detection-Metrics] (should be maximized);
 
 The output of car detection algorithm should be folder of .txt files with labels for given images in the format:
 ```
@@ -67,12 +68,15 @@ car 0.14585 212 78 292 118
 car 0.070565 388 89 500 196 
 ```
   
-2) reward to autonomous car for the reinforcement learning task,
-3) the quality of the solution presentation.
+**2) reward to autonomous car for the reinforcement learning task**,
+
+**3) the quality of the solution presentation**.
 
 The teams demonstrate their decisions in the form of a presentation about the features of the technical implementation, indicating the prospects for the application (from 16:00 on July 7, 2019).
 
-The team with the highest total score wins. The final total score is formed by the formula
+**The team with the highest total score wins.**
+
+**The final total score is formed by the formula:**
 
 I = A – (0.4ꞏN1+0.5ꞏN2+0.1ꞏN3), 
 
