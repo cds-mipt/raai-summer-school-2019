@@ -22,7 +22,9 @@ from pyglet import gl
 import argparse
 
 # Changes
-from gym_car_intersect.envs.simulator.ScenePainter import ScenePainter
+#from gym_car_intersect.envs.simulator.ScenePainter import ScenePainter
+from ScenePainter import ScenePainter
+
 #ex = CrossroadSimulatorGUI()
 painter = ScenePainter()
 backgroundImage = painter.load_background()
@@ -45,7 +47,7 @@ ZOOM_FOLLOW = False      # Set to False for fixed view (don't use zoom)
 
 SHOW_SCALE = 2 * PLAYFIELD / backgroundImage.shape[0]
 
-ROAD_WIDTH = 4.3/SCALE*1.2
+ROAD_WIDTH = 4.3/SCALE*1.3 #1.2
 SIDE_WALK = 4/SCALE
 
 ROAD_COLOR = [1, 1, 1,] #[0.44, 0.44, 0.44] # change color
@@ -720,9 +722,10 @@ class CarRacingHackaton(gym.Env, EzPickle):
                             target, new_coord = self.random_position()
                         # new_color = np.random.rand(3) #car.hull.color
                         new_color = car.hull.color #[0, 0, 0] #car.hull.color # change color
-
+                        #bot_id = np.random.randint(1, len(carLibrary))
                         ###############################################################
-                        new_coord = np.hstack((new_coord, [carSizes[i][0], carSizes[i][1]]))
+                        bot_id = self.image[i][0]
+                        new_coord = np.hstack((new_coord, [carSizes[bot_id][0], carSizes[bot_id][1]]))
                         new_car = DummyCar(self.world, new_coord, color=new_color, bot=True)
                         new_car.hull.path = target
                         new_car.userData = new_car

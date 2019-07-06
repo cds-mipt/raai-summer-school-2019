@@ -1,0 +1,6 @@
+# Add any directories, files, or patterns you don't want to be tracked by version control
+/.idea
+simulator/.idea
+simulator/__pycache__
+simulator/gym_car_intersect/__pycache__
+simulator/gym_car_intersect/envs/__pycache__

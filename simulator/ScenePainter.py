@@ -117,6 +117,8 @@ class ScenePainter:
 
         vector_car_len = np.sqrt(vector_car[0] ** 2 + vector_car[1] ** 2)
         vector_base_len = 1
+        if vector_car_len < 4:
+            return None
         cos = scalar_mult / (vector_car_len * vector_base_len)
 
         angle_rad = np.arccos(cos)

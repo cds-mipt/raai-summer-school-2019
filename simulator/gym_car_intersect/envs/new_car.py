@@ -15,8 +15,8 @@ from Box2D.b2 import (edgeShape, circleShape, fixtureDef, polygonShape, revolute
 SIZE = 80/1378.0  #SHOW_SCALE #0.02
 MC = SIZE/0.02
 ENGINE_POWER            = 100000000*SIZE*SIZE/MC/MC
-WHEEL_MOMENT_OF_INERTIA = 4000*SIZE*SIZE/MC#/MC
-FRICTION_LIMIT          = 1000000*SIZE*SIZE/MC/MC#/2     # friction ~= mass ~= size^2 (calculated implicitly using density)
+WHEEL_MOMENT_OF_INERTIA = 4000*SIZE*SIZE/MC/MC
+FRICTION_LIMIT          = 1000000*SIZE*SIZE/MC/MC/2     # friction ~= mass ~= size^2 (calculated implicitly using density)
 WHEEL_R  = 27/MC
 WHEEL_W  = 14/MC
 CENTROID = 220 # that is point which follows target in car...
