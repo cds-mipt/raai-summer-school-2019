@@ -36,7 +36,7 @@ Dataset structure:
 - 'mask' - folder with .bmp mask images with ground truth segmentation
 - 'label' - folder with ground truth bounding boxes in .txt files 
 
-In .txt files each line is in the format: <class_name> <left> <top> <right> <bottom>.
+In .txt files each line is in the format: ```<class_name> <left> <top> <right> <bottom>```.
   
 E.g. The ground truth bounding boxes of the image "2008_000034.jpg" are represented in the file "2008_000034.txt": 
 ```  
@@ -49,9 +49,11 @@ car 91 42 338 500
 ### Metrics
 The organizers analyze 3 quality metrics of the participant decisions:
 1) Average Precision (AP) quality measure for cars detection implemented by participants compared to the reference labeling of a test sample. To do this, organisers will use the open source utility [https://github.com/rafaelpadilla/Object-Detection-Metrics] (should be maximized);
+
 The output of car detection algorithm should be folder of .txt files with labels for given images in the format:
+```
 <class_name> <confidence> <left> <top> <right> <bottom>
-  
+```
 For example, file "2008_000034.txt": 
 ```
 car 0.99001 80 1 295 500  
