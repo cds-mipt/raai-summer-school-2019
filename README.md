@@ -39,7 +39,7 @@ Dataset structure:
 In .txt files each line is in the format: <class_name> <left> <top> <right> <bottom>.
   
 E.g. The ground truth bounding boxes of the image "2008_000034.jpg" are represented in the file "2008_000034.txt": 
-  
+```  
 car 6 234 45 362
 
 car 1 156 103 336
@@ -47,7 +47,7 @@ car 1 156 103 336
 car 36 111 198 416
 
 car 91 42 338 500
-
+```
 
 ### Metrics
 The organizers analyze 3 quality metrics of the participant decisions:
@@ -56,7 +56,7 @@ The output of car detection algorithm should be folder of .txt files with labels
 <class_name> <confidence> <left> <top> <right> <bottom>
   
 For example, file "2008_000034.txt": 
-
+```
 car 0.99001 80 1 295 500  
 
 car 0.12601 36 13 404 316  
@@ -66,6 +66,7 @@ car 1.00000 430 117 500 307
 car 0.14585 212 78 292 118  
 
 car 0.070565 388 89 500 196 
+```
   
 2) reward to autonomous car for the reinforcement learning task,
 3) the quality of the solution presentation.
