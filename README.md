@@ -30,7 +30,7 @@ The solution of the hackathon task involves working with an crossroad simulator 
 
 ### Datasets
 
-- **Training dataset for car segmentation and detection  on images:** [Link to training dataset .zip archive](https://yadi.sk/d/nb_kC-DmGcqoqA)
+- **Training dataset for car segmentation and detection  on images:** [Link to training dataset .zip archive](https://yadi.sk/d/NxaCr9Yzmvr-GQ)
 
 Dataset includes 500 color images, masks and bounding boxes and contains 3 folders:
 
