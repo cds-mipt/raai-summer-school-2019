@@ -48,8 +48,8 @@ car 36 111 198 416
 car 91 42 338 500
 ```
 
-- **Testing dataset for car segmentation and detection  on images:** will appear here after 13:00 07 July
-
+- **Testing dataset for car segmentation and detection  on images:** [Link to test dataset with color images] (https://yadi.sk/d/NxaCr9Yzmvr-GQ)
+ 
 ### Metrics
 The organizers analyze 3 quality metrics of the participant decisions:
 
