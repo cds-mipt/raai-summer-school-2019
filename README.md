@@ -101,4 +101,4 @@ where A – total number of teams, Ni – occupied place in the rating on the i-
 | team01* (Edward Paul, Mohammad Amin Kashi)| 54.13 | 5 | 9.5 | 9  |  
 | team10 (Gorodetskiy Andrey) | 19.11 | 4 | 8 | 8  | 
 | team02 (Makedonskii Vyacheslav)| 1 | 0 | 6 | 7  | 
-'*' Winner
+'*' - Winner
