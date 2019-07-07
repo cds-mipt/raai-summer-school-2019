@@ -98,13 +98,6 @@ where A – total number of teams, Ni – occupied place in the rating on the i-
 
 | Team | AP of car detection | RL reward | Presentation | Total score |
 | :--- | :--- | :--- | :--- | :--- | 
-| team01 | - | - | - | -  | -  | 
-| team02 | - | - | - | -  | -  | 
-| team03 | - | - | - | -  | -  | 
-| team04 | - | - | - | -  | -  | 
-| team05 | - | - | - | -  | -  | 
-| team06 | - | - | - | -  | -  | 
-| team07 | - | - | - | -  | -  | 
-| team08 | - | - | - | -  | -  | 
-| team09 | - | - | - | -  | -  | 
-| team10 | - | - | - | -  | -  | 
+| team01 | 54.13 | 5 | 9.5 | 9  |  
+| team10 | 19.11 | 4 | 8 | 8  | 
+| team02 | 1 | 0 | 6 | 7  | 
