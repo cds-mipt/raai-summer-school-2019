@@ -48,7 +48,11 @@ car 36 111 198 416
 car 91 42 338 500
 ```
 
-- **Testing dataset for car segmentation and detection  on images:** [Link to test dataset with color images](https://yadi.sk/d/NxaCr9Yzmvr-GQ)
+- **Testing dataset for car segmentation and detection  on images:** 
+[Link to test dataset with color images](https://yadi.sk/d/NxaCr9Yzmvr-GQ)
+[Link to test dataset with text labels](https://yadi.sk/d/N5D98zOm4V06PQ)
+[Link to test dataset with masks](https://yadi.sk/d/id5HJbwXs6MK6A)
+
  
 ### Metrics
 The organizers analyze 3 quality metrics of the participant decisions:
