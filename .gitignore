@@ -2,3 +2,5 @@
 /.idea
 /simulator/.idea
 /simulator/__pycache__
+/simulator/sac_torch/__pycache__
+/simulator/unetdetector/__pycache__

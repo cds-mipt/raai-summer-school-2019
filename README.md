@@ -47,16 +47,8 @@ car 1 156 103 336
 car 36 111 198 416
 car 91 42 338 500
 ```
+- **Testing dataset for car segmentation and detection  on images:** [Link to test dataset with color images](https://yadi.sk/d/NxaCr9Yzmvr-GQ)
 
-- **Testing dataset for car segmentation and detection  on images:** 
-
-[Link to test dataset with color images](https://yadi.sk/d/NxaCr9Yzmvr-GQ)
-
-[Link to test dataset with text labels](https://yadi.sk/d/N5D98zOm4V06PQ)
-
-[Link to test dataset with masks](https://yadi.sk/d/id5HJbwXs6MK6A)
-
- 
 ### Metrics
 The organizers analyze 3 quality metrics of the participant decisions:
 
@@ -105,8 +97,7 @@ where A – total number of teams, Ni – occupied place in the rating on the i-
 
 | Team | AP of car detection | RL reward | Presentation | Total score |
 | :--- | :--- | :--- | :--- | :--- | 
-| team01* (Edward Paul, Mohammad Amin Kashi)| 54.13 | 5 | 9.5 | 9  |  
+| team01* (Edward Paul, Mohammad Amin Kashi) | 54.13 | 5 | 9.5 | 9  |  
 | team10 (Gorodetskiy Andrey) | 19.11 | 4 | 8 | 8  | 
-| team02 (Makedonskii Vyacheslav)| 1 | 0 | 6 | 7  | 
-
-'*' - Winner
+| team02 (Makedonskii Vyacheslav) | 1 | 0 | 6 | 7  | 
+* Winner
